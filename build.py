@@ -19,7 +19,7 @@ except Exception:
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 PACKS = os.path.join(ROOT, "packs")
-TARGETS = ["index.html", "artifact-page.html"]
+TARGETS = ["index.html"]
 
 REQUIRED_ANSWER_FIELDS = ["rank", "label_ar", "metric", "hint"]
 
@@ -130,6 +130,25 @@ def inject(questions):
         print("  wrote %-20s %7d bytes" % (t, len(new.encode("utf-8"))))
 
 
+def make_artifact():
+    """يشتق صفحة النشر من index.html: بلا doctype/html/head/body."""
+    src = io.open(os.path.join(ROOT, "index.html"), encoding="utf-8").read()
+    a = re.sub(r"^<!DOCTYPE html>\s*\n<html[^>]*>\s*\n<head>\s*\n", "", src)
+    a = a.replace('<meta charset="UTF-8">\n', "")
+    a = a.replace('<meta name="viewport" content="width=device-width, initial-scale=1.0">\n', "")
+    a = a.replace("</head>\n<body>\n", "")
+    a = a.replace("</body>\n</html>\n", "")
+    a = a.replace("<title>توب تن بيكس — خمن بالمقلوب</title>",
+                  "<title>توب تن بيكس</title>\n"
+                  '<meta name="claude:viewport-fit-sides" content="cover">')
+    for bad in ("<!DOCTYPE", "<head>", "</head>", "<body>", "</body>", "</html>"):
+        if bad in a:
+            sys.exit("artifact page still contains %s" % bad)
+    out = os.path.join(ROOT, "artifact-page.html")
+    io.open(out, "w", encoding="utf-8").write(a)
+    print("  wrote %-20s %7d bytes" % ("artifact-page.html", len(a.encode("utf-8"))))
+
+
 def main():
     questions, origin = load_packs()
     errs, warns = validate(questions, origin)
@@ -151,6 +170,7 @@ def main():
     print("validation: OK")
     if "--check" not in sys.argv:
         inject(questions)
+        make_artifact()
     print("done.")
 
 
