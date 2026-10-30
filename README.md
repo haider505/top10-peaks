@@ -1,5 +1,7 @@
 # توب تن بيكس — خمن بالمقلوب
 
+**العب الآن:** <https://haider505.github.io/top10-peaks/>
+
 لعبة مسابقات عربية لفريقين بنظام النقاط المعكوس: المرتبة `#1` هي الأعلى إحصائياً وتمنح **أقل** النقاط،
 والمرتبة `#10` هي الأقل ضمن القائمة وتمنح **أعلى** النقاط.
 
@@ -20,7 +22,7 @@
 2. من مجلد المشروع، اربطه وادفع:
 
 ```bash
-git remote add origin https://github.com/<اسم-حسابك>/top10-peaks.git
+git remote add origin https://github.com/haider505/top10-peaks.git
 git branch -M main
 git push -u origin main
 ```
@@ -31,7 +33,7 @@ git push -u origin main
 4. بعد دقيقة أو دقيقتين يصبح الرابط جاهزاً:
 
 ```
-https://<اسم-حسابك>.github.io/top10-peaks/
+https://haider505.github.io/top10-peaks/
 ```
 
 هذا رابط عام: أرسله لأي شخص ويفتح اللعبة مباشرة في المتصفح، على الجوال أو الآيباد أو اللابتوب.
@@ -51,7 +53,7 @@ git add -A && git commit -m "تحديث الأسئلة" && git push
 افتح الرابط في جهاز العرض (التلفزيون أو اللابتوب)، ثم افتح على جهاز المقدم:
 
 ```
-https://<اسم-حسابك>.github.io/top10-peaks/#host
+https://haider505.github.io/top10-peaks/#host
 ```
 
 شاشة المقدم تعرض مفتاح الإجابات كاملاً وأزرار المنح والخطأ، وشاشة العرض تتفاعل فوراً.
