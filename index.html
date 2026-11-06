@@ -9,166 +9,205 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600;700&family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
+  /* ===== الواجهة الفاتحة — لوحة ألوان واحدة يشتق منها كل شيء ===== */
   :root{
     direction:rtl;                  /* الوسم <html> يُزال عند النشر */
-    color-scheme:dark;              /* لوحة داكنة ثابتة: مظهر استوديو المسابقات */
-    --bg:#090D16;
-    --panel:rgba(255,255,255,.05);
-    --line:rgba(255,255,255,.10);
-    --t1:#22d3ee;
-    --t2:#f472b6;
+    color-scheme:light;
+    --bg:#EDF1F8;
+    --bg2:#FFFFFF;
+    --surface:#FFFFFF;
+    --line:#D9E1EF;
+    --line-soft:#E9EEF7;
+    --ink:#16213A;
+    --muted:#5B6C8A;
+    --accent:#2563EB;
+    --accent-soft:#E6EDFF;
+    --good:#047857;
+    --good-soft:#DCFCE7;
+    --warn:#B45309;
+    --warn-soft:#FEF3C7;
+    --bad:#BE123C;
+    --bad-soft:#FFE4E6;
+    --shadow:0 2px 4px rgba(22,33,58,.05), 0 8px 24px -8px rgba(22,33,58,.12);
+    --shadow-lg:0 8px 20px -6px rgba(22,33,58,.18), 0 24px 48px -16px rgba(22,33,58,.22);
+    --t1:#0284C7;
+    --t2:#DB2777;
   }
+
+  /* خط أكبر: كل المقاسات بالـ rem فتكبر معه الواجهة كلها */
+  html{ font-size:17.5px; }
+  @media(min-width:900px){ html{ font-size:19px; } }
+
   *{ -webkit-tap-highlight-color:transparent; }
   html,body{ height:100%; }
   body{
     margin:0;
     background:var(--bg);
-    color:#E8EDF7;
+    color:var(--ink);
     font-family:'Readex Pro','Cairo',system-ui,sans-serif;
+    font-size:1rem;
     overflow-x:hidden;
   }
-  /* ===== ambient neon backdrop ===== */
+
+  /* خلفية هادئة بلمستَي لون فقط */
   .bg-aura{ position:fixed; inset:0; pointer-events:none; z-index:0; }
   .bg-aura::before,.bg-aura::after{
     content:''; position:absolute; border-radius:50%; filter:blur(90px); opacity:.5;
   }
   .bg-aura::before{
-    width:60vw; height:60vw; top:-20vw; right:-10vw;
-    background:radial-gradient(circle,#1e3a8a 0%,transparent 70%);
+    width:52vw; height:52vw; top:-18vw; right:-10vw;
+    background:radial-gradient(circle,#CFE0FF 0%,transparent 70%);
   }
   .bg-aura::after{
-    width:55vw; height:55vw; bottom:-20vw; left:-12vw;
-    background:radial-gradient(circle,#701a75 0%,transparent 70%);
+    width:48vw; height:48vw; bottom:-18vw; left:-12vw;
+    background:radial-gradient(circle,#FBD9EC 0%,transparent 70%);
   }
-  .bg-grid{
-    position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.25;
-    background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),
-                     linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);
-    background-size:46px 46px;
-    mask-image:radial-gradient(ellipse at 50% 0%,#000 0%,transparent 75%);
-    -webkit-mask-image:radial-gradient(ellipse at 50% 0%,#000 0%,transparent 75%);
-  }
+  .bg-grid{ display:none; }   /* أُزيلت الشبكة: تبسيط */
+
   .glass{
-    background:var(--panel);
+    background:var(--surface);
     border:1px solid var(--line);
-    backdrop-filter:blur(12px);
-    -webkit-backdrop-filter:blur(12px);
+    box-shadow:var(--shadow);
   }
+  .text-muted{ color:var(--muted); }
+  .text-accent{ color:var(--accent); }
+  .text-good{ color:var(--good); }
+  .text-warn{ color:var(--warn); }
+  .text-bad{ color:var(--bad); }
+  .bg-chip{ background:var(--accent-soft); color:var(--accent); }
+  .bg-badge-bad{ background:var(--bad-soft); color:var(--bad); }
+
   .screen{ display:none; }
   .screen.active{ display:block; }
 
-  /* هامش جانبي ثابت 16px يتجاوز شريط النظام على الهاتف */
   .app-shell{
     padding-left:max(16px, env(safe-area-inset-left, 0px));
     padding-right:max(16px, env(safe-area-inset-right, 0px));
   }
 
-  /* ===== the 10 flip cards ===== */
-  .board{
-    display:grid; gap:.6rem;
-    grid-template-columns:1fr;
-  }
-  @media(min-width:700px){        /* يشمل الآيباد عمودياً */
+  /* ===== بطاقات اللوحة العشر ===== */
+  .board{ display:grid; gap:.55rem; grid-template-columns:1fr; }
+  @media(min-width:700px){
     .board{
       grid-template-columns:1fr 1fr;
       grid-template-rows:repeat(5,1fr);
       grid-auto-flow:column;
     }
   }
-  /* الساحة: عمود واحد على الهاتف، ولوحة بين بطاقتَي الفريقين على الشاشات الأوسع */
   .arena-grid{ display:grid; gap:.75rem; }
   @media(min-width:900px){
-    .arena-grid{ grid-template-columns:minmax(0,13rem) minmax(0,1fr) minmax(0,13rem); }
+    .arena-grid{ grid-template-columns:minmax(0,14rem) minmax(0,1fr) minmax(0,14rem); }
   }
 
-  .card{ perspective:1200px; height:76px; cursor:default; }
-  @media(min-width:900px){ .card{ height:84px; } }
+  .card{ perspective:1200px; height:4.6rem; cursor:default; }
+  @media(min-width:900px){ .card{ height:4.9rem; } }
   .card-inner{
     position:relative; width:100%; height:100%;
     transform-style:preserve-3d;
-    transition:transform .65s cubic-bezier(.3,1.4,.4,1);
+    transition:transform .6s cubic-bezier(.3,1.3,.4,1);
   }
   .card.revealed .card-inner{ transform:rotateY(180deg); }
   .face{
     position:absolute; inset:0;
     backface-visibility:hidden; -webkit-backface-visibility:hidden;
-    border-radius:1rem; overflow:hidden;
+    border-radius:.9rem; overflow:hidden;
     display:flex; align-items:center; gap:.7rem;
-    padding:0 .85rem;
+    padding:0 .8rem;
     border:1px solid var(--line);
-    background:rgba(255,255,255,.045);
-    backdrop-filter:blur(8px);
+    background:var(--surface);
+    box-shadow:var(--shadow);
   }
   .face.back{ transform:rotateY(180deg); }
   .rank-badge{
-    flex:0 0 auto; width:44px; height:44px; border-radius:.75rem;
+    flex:0 0 auto; width:2.5rem; height:2.5rem; border-radius:.7rem;
     display:grid; place-items:center;
     font-weight:700; font-size:1.05rem; letter-spacing:-.5px;
-    background:rgba(0,0,0,.35);
-    border:1px solid rgba(255,255,255,.14);
+    background:#F1F5FC; color:var(--muted);
+    border:1px solid var(--line);
   }
-  /* difficulty tiers */
-  .tier-safe .face.front{ box-shadow:inset 0 0 0 1px rgba(16,185,129,.35), 0 0 22px -8px rgba(34,211,238,.55); }
-  .tier-safe .rank-badge{ color:#6ee7b7; border-color:rgba(16,185,129,.5); }
-  .tier-mid  .face.front{ box-shadow:inset 0 0 0 1px rgba(167,139,250,.38), 0 0 22px -8px rgba(245,158,11,.5); }
-  .tier-mid  .rank-badge{ color:#fcd34d; border-color:rgba(167,139,250,.55); }
-  .tier-risk .face.front{
-    box-shadow:inset 0 0 0 1px rgba(244,63,94,.45), 0 0 30px -6px rgba(251,191,36,.6);
-    background:linear-gradient(135deg,rgba(244,63,94,.14),rgba(251,191,36,.10));
+  /* شريط لوني على حافة البطاقة يدل على الفئة — أبسط من التوهج */
+  .face.front::before{
+    content:''; position:absolute; inset-inline-start:0; top:0; bottom:0; width:.3rem;
   }
-  .tier-risk .rank-badge{ color:#fbbf24; border-color:rgba(251,191,36,.65); }
-  .tier-risk .face.front::after{
-    content:''; position:absolute; inset:0;
-    background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.14) 50%,transparent 65%);
-    animation:sheen 3.4s linear infinite;
-  }
-  @keyframes sheen{ 0%{ transform:translateX(-120%); } 100%{ transform:translateX(120%); } }
+  .tier-safe .face.front::before{ background:#10B981; }
+  .tier-safe .rank-badge{ color:#047857; background:var(--good-soft); border-color:#A7F3D0; }
+  .tier-mid  .face.front::before{ background:#F59E0B; }
+  .tier-mid  .rank-badge{ color:#B45309; background:var(--warn-soft); border-color:#FDE68A; }
+  .tier-risk .face.front::before{ background:#E11D48; }
+  .tier-risk .rank-badge{ color:#BE123C; background:var(--bad-soft); border-color:#FECDD3; }
+  .tier-risk .face.front{ border-color:#FBCFE8; }
 
-  .card.hintable .face.front{ cursor:pointer; outline:2px dashed rgba(250,204,21,.8); outline-offset:3px; }
-  .card.hintable:hover .face.front{ background:rgba(250,204,21,.12); }
+  .card.hintable .face.front{ cursor:pointer; outline:2px dashed #F59E0B; outline-offset:2px; }
+  .card.hintable:hover .face.front{ background:var(--warn-soft); }
   .clue-badge{
-    position:absolute; inset:auto .6rem .35rem .6rem;
-    font-size:.62rem; line-height:1.25;
-    color:#fde68a; background:rgba(120,53,15,.55);
-    border:1px solid rgba(250,204,21,.45);
-    border-radius:.5rem; padding:.18rem .4rem;
+    position:absolute; inset:auto .6rem .3rem 2.9rem;
+    font-size:.66rem; line-height:1.25;
+    color:var(--warn); background:var(--warn-soft);
+    border:1px solid #FDE68A;
+    border-radius:.45rem; padding:.15rem .4rem;
     text-align:center;
     display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
     overflow:hidden;
   }
-  .card.has-clue .face.front{ align-items:flex-start; padding-top:.5rem; }
+  .card.has-clue .face.front{ align-items:flex-start; padding-top:.45rem; }
 
-  .face.back{ background:linear-gradient(135deg,rgba(255,255,255,.10),rgba(255,255,255,.04)); }
-  .card.missed .face.back{
-    background:rgba(100,116,139,.14);
-    border-color:rgba(148,163,184,.25);
-    color:#94a3b8;
+  .face.back{ background:#F7FAFF; }
+  .card.missed .face.back{ background:#F3F5F9; border-color:var(--line); color:var(--muted); }
+  .card.missed .rank-badge{ color:var(--muted); background:#EDF1F8; }
+
+  /* ===== صندوق الإجابة الصحيحة (يظهر 5 ثوانٍ) ===== */
+  #answerReveal{
+    position:fixed; inset:0; z-index:94; display:none;
+    place-items:center; padding:1rem;
+    background:rgba(22,33,58,.28);
+    -webkit-backdrop-filter:blur(2px); backdrop-filter:blur(2px);
   }
-  .card.missed .rank-badge{ color:#94a3b8; border-color:rgba(148,163,184,.3); }
+  #answerReveal.show{ display:grid; animation:revealFade .2s ease-out; }
+  @keyframes revealFade{ from{ opacity:0 } }
+  #answerReveal .box{
+    width:min(100% - 2rem, 26rem);
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:1.2rem;
+    box-shadow:var(--shadow-lg);
+    overflow:hidden; text-align:center;
+    animation:revealPop .35s cubic-bezier(.2,1.5,.35,1);
+  }
+  @keyframes revealPop{ from{ transform:scale(.88); opacity:0 } }
+  #answerReveal .cap{
+    padding:.7rem 1rem; font-size:.95rem; font-weight:600;
+    background:var(--good-soft); color:var(--good);
+  }
+  #answerReveal .body{ padding:1.2rem 1.1rem 1.4rem; }
+  #arBadge{
+    display:inline-grid; place-items:center;
+    width:3.2rem; height:3.2rem; border-radius:.9rem;
+    font-size:1.3rem; font-weight:700; margin-bottom:.7rem;
+  }
+  #arLabel{ font-size:1.7rem; font-weight:700; line-height:1.3; }
+  #arMetric{ font-size:1rem; color:var(--muted); margin-top:.45rem; }
+  #arTeam{ font-size:.95rem; font-weight:600; margin-top:.9rem; }
+  #arBar{ height:.3rem; background:var(--line-soft); }
+  #arBar i{ display:block; height:100%; background:var(--good); width:100%; }
+  #answerReveal.show #arBar i{ animation:arCount 5s linear forwards; }
+  @keyframes arCount{ to{ width:0 } }
 
-  /* ===== effects ===== */
+  /* ===== مؤثرات ===== */
   @keyframes shake{
     0%,100%{ transform:translateX(0); }
-    10%,50%,90%{ transform:translateX(-11px); }
-    30%,70%{ transform:translateX(11px); }
+    10%,50%,90%{ transform:translateX(-9px); }
+    30%,70%{ transform:translateX(9px); }
   }
-  body.shaking{ animation:shake .5s cubic-bezier(.36,.07,.19,.97); }
+  body.shaking{ animation:shake .45s cubic-bezier(.36,.07,.19,.97); }
 
   #strikeOverlay{
     position:fixed; inset:0; z-index:90; display:none;
-    place-items:center; background:rgba(190,18,60,.3);
-    backdrop-filter:blur(3px);
+    place-items:center; background:rgba(225,29,72,.18);
   }
   #strikeOverlay.show{ display:grid; animation:strikeFlash .85s ease-out forwards; }
-  @keyframes strikeFlash{
-    0%{ opacity:0; }
-    12%{ opacity:1; }
-    70%{ opacity:1; }
-    100%{ opacity:0; }
-  }
+  @keyframes strikeFlash{ 0%{opacity:0} 12%{opacity:1} 70%{opacity:1} 100%{opacity:0} }
   #strikeOverlay .x{
-    font-size:clamp(5rem,22vw,14rem); line-height:1;
-    filter:drop-shadow(0 0 40px rgba(244,63,94,.9));
+    font-size:clamp(5rem,20vw,12rem); line-height:1;
     animation:xPop .85s cubic-bezier(.2,1.6,.3,1) forwards;
   }
   @keyframes xPop{
@@ -180,37 +219,34 @@
   #confetti{ position:fixed; inset:0; z-index:85; pointer-events:none; }
 
   .toast{
-    background:rgba(15,23,42,.95); border:1px solid var(--line);
-    border-radius:.9rem; padding:.65rem 1rem; font-size:.85rem;
-    box-shadow:0 16px 40px -12px rgba(0,0,0,.8);
+    background:var(--surface); border:1px solid var(--line); color:var(--ink);
+    border-radius:.8rem; padding:.6rem 1rem; font-size:.95rem; font-weight:500;
+    box-shadow:var(--shadow-lg);
     animation:toastIn .25s ease-out, toastOut .3s ease-in 2.7s forwards;
   }
   @keyframes toastIn{ from{ opacity:0; transform:translateY(-14px); } }
   @keyframes toastOut{ to{ opacity:0; transform:translateY(-14px); } }
 
   .strike-slot{
-    width:28px; height:28px; border-radius:.5rem;
+    width:1.7rem; height:1.7rem; border-radius:.45rem;
     display:grid; place-items:center; font-size:.9rem;
-    border:1px solid var(--line); background:rgba(0,0,0,.25);
-    color:rgba(255,255,255,.18);
+    border:1px solid var(--line); background:#F4F7FC;
+    color:#C3CEDF;
   }
   .strike-slot.on{
-    background:rgba(190,18,60,.32); border-color:rgba(244,63,94,.7);
-    color:#fff; animation:xPop .4s ease-out;
-  }
-  .team-card.active{
-    box-shadow:0 0 0 2px var(--accent), 0 0 40px -10px var(--accent);
-    transform:translateY(-2px);
+    background:var(--bad-soft); border-color:#FDA4AF; color:var(--bad);
+    animation:xPop .4s ease-out;
   }
   .team-card{ transition:box-shadow .3s, transform .3s, opacity .3s; }
-  .team-card.locked{ opacity:.45; filter:grayscale(.6); }
+  .team-card.active{ box-shadow:0 0 0 3px var(--accent), var(--shadow); }
+  .team-card.locked{ opacity:.55; }
 
   .streak-pop{
     position:fixed; top:22%; left:50%; transform:translateX(-50%);
-    z-index:88; font-weight:700; font-size:clamp(1.1rem,4vw,1.8rem);
-    padding:.6rem 1.4rem; border-radius:999px;
-    background:linear-gradient(90deg,#f59e0b,#ef4444);
-    box-shadow:0 0 50px -8px rgba(245,158,11,.9);
+    z-index:88; font-weight:700; font-size:clamp(1.1rem,4vw,1.7rem);
+    padding:.6rem 1.4rem; border-radius:999px; color:#fff;
+    background:linear-gradient(90deg,#F59E0B,#EF4444);
+    box-shadow:var(--shadow-lg);
     animation:streakUp 1.8s ease-out forwards;
   }
   @keyframes streakUp{
@@ -221,66 +257,72 @@
   }
 
   .chip{
-    padding:.35rem .8rem; border-radius:999px; font-size:.78rem;
-    border:1px solid var(--line); background:rgba(255,255,255,.04);
-    cursor:pointer; transition:.2s; user-select:none;
+    padding:.4rem .9rem; border-radius:999px; font-size:.9rem; font-weight:500;
+    border:1px solid var(--line); background:var(--surface); color:var(--muted);
+    cursor:pointer; transition:.15s; user-select:none;
   }
-  .chip.on{ background:rgba(34,211,238,.18); border-color:rgba(34,211,238,.6); color:#a5f3fc; }
+  .chip:hover{ border-color:#BBD0F5; }
+  .chip.on{ background:var(--accent); border-color:var(--accent); color:#fff; }
 
-  .seg{ display:flex; gap:.35rem; flex-wrap:wrap; }
+  .seg{ display:flex; gap:.4rem; flex-wrap:wrap; }
   .seg button{
-    padding:.45rem .85rem; border-radius:.7rem; font-size:.8rem;
-    border:1px solid var(--line); background:rgba(255,255,255,.04);
-    transition:.2s;
+    padding:.5rem 1rem; border-radius:.7rem; font-size:.9rem; font-weight:500;
+    border:1px solid var(--line); background:var(--surface); color:var(--muted);
+    transition:.15s;
   }
-  .seg button.on{ background:rgba(34,211,238,.2); border-color:rgba(34,211,238,.65); color:#a5f3fc; }
+  .seg button:hover{ border-color:#BBD0F5; }
+  .seg button.on{ background:var(--accent); border-color:var(--accent); color:#fff; }
 
   .btn{
-    border-radius:.85rem; padding:.6rem 1.1rem; font-weight:600;
-    border:1px solid var(--line); background:rgba(255,255,255,.06);
-    transition:.18s; font-size:.85rem;
+    border-radius:.75rem; padding:.6rem 1.1rem; font-weight:600;
+    border:1px solid var(--line); background:var(--surface); color:var(--ink);
+    transition:.15s; font-size:.95rem; box-shadow:0 1px 2px rgba(22,33,58,.05);
   }
-  .btn:hover:not(:disabled){ background:rgba(255,255,255,.13); transform:translateY(-1px); }
-  .btn:disabled{ opacity:.35; cursor:not-allowed; }
-  .btn-primary{
-    background:linear-gradient(135deg,#0891b2,#2563eb);
-    border-color:rgba(56,189,248,.6);
-    box-shadow:0 10px 30px -10px rgba(37,99,235,.9);
-  }
-  .btn-primary:hover:not(:disabled){ background:linear-gradient(135deg,#06b6d4,#3b82f6); }
-  .btn-danger{ background:rgba(190,18,60,.3); border-color:rgba(244,63,94,.55); }
-  .btn-gold{ background:linear-gradient(135deg,#b45309,#f59e0b); border-color:rgba(251,191,36,.6); color:#1c1917; }
+  .btn:hover:not(:disabled){ background:#F4F7FC; border-color:#BBD0F5; }
+  .btn:disabled{ opacity:.45; cursor:not-allowed; }
+  .btn-primary{ background:var(--accent); border-color:var(--accent); color:#fff; }
+  .btn-primary:hover:not(:disabled){ background:#1D4FD8; border-color:#1D4FD8; }
+  .btn-danger{ background:var(--bad-soft); border-color:#FDA4AF; color:var(--bad); }
+  .btn-danger:hover:not(:disabled){ background:#FFD5DA; border-color:#FB7185; }
+  .btn-gold{ background:#F59E0B; border-color:#F59E0B; color:#3B2606; }
+  .btn-gold:hover:not(:disabled){ background:#D98706; border-color:#D98706; }
 
   .modal{ position:fixed; inset:0; z-index:95; display:none; }
   .modal.open{ display:grid; place-items:center; }
-  .modal-bd{ position:absolute; inset:0; background:rgba(2,6,23,.82); backdrop-filter:blur(6px); }
+  .modal-bd{ position:absolute; inset:0; background:rgba(22,33,58,.42); }
 
   input,select,textarea{
-    background:rgba(255,255,255,.06); border:1px solid var(--line);
-    border-radius:.75rem; padding:.55rem .8rem; color:#E8EDF7;
-    font-family:inherit; font-size:.85rem; outline:none; width:100%;
+    background:var(--surface); border:1px solid var(--line);
+    border-radius:.7rem; padding:.6rem .85rem; color:var(--ink);
+    font-family:inherit; font-size:1rem; outline:none; width:100%;
   }
-  input:focus,select,textarea:focus{ border-color:rgba(56,189,248,.7); }
-  select option{ background:#0f172a; }
-  input[type=color]{ padding:.2rem; height:40px; cursor:pointer; }
+  input::placeholder,textarea::placeholder{ color:#9AA9C2; }
+  input:focus,select:focus,textarea:focus{
+    border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft);
+  }
+  select option{ background:#fff; }
+  input[type=color]{ padding:.2rem; height:2.4rem; cursor:pointer; }
 
   .timer-fill{ transition:width .25s linear, background .4s; }
   .scroll-y{ overflow-y:auto; scrollbar-width:thin; }
   .scroll-y::-webkit-scrollbar{ width:8px; }
-  .scroll-y::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.15); border-radius:9px; }
+  .scroll-y::-webkit-scrollbar-thumb{ background:#C8D4E6; border-radius:9px; }
 
   .podium-bar{ animation:rise .9s cubic-bezier(.2,1.3,.3,1) forwards; transform-origin:bottom; }
   @keyframes rise{ from{ transform:scaleY(0); } to{ transform:scaleY(1); } }
   .trophy{ animation:float 2.6s ease-in-out infinite; }
   @keyframes float{ 0%,100%{ transform:translateY(0) } 50%{ transform:translateY(-10px) } }
 
-  /* host answer key row */
   .akey{
     display:flex; align-items:center; gap:.5rem;
-    border:1px solid var(--line); border-radius:.75rem;
-    padding:.4rem .55rem; background:rgba(255,255,255,.04);
+    border:1px solid var(--line); border-radius:.7rem;
+    padding:.45rem .6rem; background:var(--surface);
   }
-  .akey.done{ opacity:.4; }
+  .akey.done{ opacity:.5; background:#F4F7FC; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:.01ms !important; transition-duration:.01ms !important; }
+  }
 </style>
 </head>
 <body>
@@ -289,6 +331,20 @@
 <canvas id="confetti"></canvas>
 <div id="strikeOverlay"><div class="text-center"><div class="x">❌</div><div id="strikeWho" class="text-xl font-bold mt-2"></div></div></div>
 <div id="toasts" class="fixed top-4 left-1/2 -translate-x-1/2 z-[92] flex flex-col gap-2 items-center w-[min(92vw,30rem)]"></div>
+
+<!-- صندوق الإجابة الصحيحة: يظهر عند كل إجابة صحيحة ويختفي بعد 5 ثوانٍ -->
+<div id="answerReveal">
+  <div class="box">
+    <div class="cap" id="arCap">إجابة صحيحة</div>
+    <div class="body">
+      <div id="arBadge">#1</div>
+      <div id="arLabel">—</div>
+      <div id="arMetric"></div>
+      <div id="arTeam"></div>
+    </div>
+    <div id="arBar"><i></i></div>
+  </div>
+</div>
 
 <div class="relative z-10 app-shell">
 
@@ -304,28 +360,28 @@
           <path d="M14 32V16l-4 3" stroke="url(#lg1)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
           <circle cx="31" cy="24" r="7.5" stroke="url(#lg1)" stroke-width="3"/>
         </svg>
-        <h1 class="text-4xl sm:text-5xl font-bold bg-gradient-to-l from-cyan-300 via-sky-200 to-fuchsia-300 bg-clip-text text-transparent">توب تن بيكس</h1>
+        <h1 class="text-4xl sm:text-5xl font-bold bg-gradient-to-l from-blue-600 via-violet-600 to-fuchsia-600 bg-clip-text text-transparent">توب تن بيكس</h1>
       </div>
-      <p class="text-2xl font-semibold text-amber-300">خمن بالمقلوب</p>
-      <p class="text-sm text-slate-400 mt-2 max-w-xl mx-auto">المرتبة <span class="text-emerald-300 font-bold">#1</span> هي الأعلى إحصائياً وتمنح أقل النقاط، والمرتبة <span class="text-amber-300 font-bold">#10</span> هي الأقل ضمن القائمة وتمنح أعلى النقاط. القناصة فقط يجرؤون على العشرة.</p>
+      <p class="text-2xl font-semibold text-warn">خمن بالمقلوب</p>
+      <p class="text-sm text-muted mt-2 max-w-xl mx-auto">المرتبة <span class="text-good font-bold">#1</span> هي الأعلى إحصائياً وتمنح أقل النقاط، والمرتبة <span class="text-warn font-bold">#10</span> هي الأقل ضمن القائمة وتمنح أعلى النقاط. القناصة فقط يجرؤون على العشرة.</p>
     </header>
 
     <!-- teams -->
     <div class="grid sm:grid-cols-2 gap-4 mb-5">
       <div class="glass rounded-2xl p-4">
-        <div class="text-xs text-slate-400 mb-2">الفريق الأول</div>
+        <div class="text-xs text-muted mb-2">الفريق الأول</div>
         <input id="t1name" value="الفريق الأول" maxlength="22">
         <div class="flex items-center gap-3 mt-3">
-          <input type="color" id="t1color" value="#22d3ee" class="w-16">
-          <span class="text-xs text-slate-400">لون الفريق</span>
+          <input type="color" id="t1color" value="#0284C7" class="w-16">
+          <span class="text-xs text-muted">لون الفريق</span>
         </div>
       </div>
       <div class="glass rounded-2xl p-4">
-        <div class="text-xs text-slate-400 mb-2">الفريق الثاني</div>
+        <div class="text-xs text-muted mb-2">الفريق الثاني</div>
         <input id="t2name" value="الفريق الثاني" maxlength="22">
         <div class="flex items-center gap-3 mt-3">
-          <input type="color" id="t2color" value="#f472b6" class="w-16">
-          <span class="text-xs text-slate-400">لون الفريق</span>
+          <input type="color" id="t2color" value="#DB2777" class="w-16">
+          <span class="text-xs text-muted">لون الفريق</span>
         </div>
       </div>
     </div>
@@ -333,27 +389,27 @@
     <!-- settings -->
     <div class="glass rounded-2xl p-5 mb-5 grid sm:grid-cols-2 gap-5">
       <div>
-        <div class="text-xs text-slate-400 mb-2">عدد الجولات</div>
+        <div class="text-xs text-muted mb-2">عدد الجولات</div>
         <div class="seg" id="segRounds">
           <button data-v="3">3</button><button data-v="5" class="on">5</button>
           <button data-v="7">7</button><button data-v="0">الكل</button>
         </div>
       </div>
       <div>
-        <div class="text-xs text-slate-400 mb-2">مؤقت الدور</div>
+        <div class="text-xs text-muted mb-2">مؤقت الدور</div>
         <div class="seg" id="segTimer">
           <button data-v="20">20 ثانية</button><button data-v="30" class="on">30 ثانية</button>
           <button data-v="45">45 ثانية</button><button data-v="0">بدون مؤقت</button>
         </div>
       </div>
       <div>
-        <div class="text-xs text-slate-400 mb-2">مقياس النقاط</div>
+        <div class="text-xs text-muted mb-2">مقياس النقاط</div>
         <div class="seg" id="segScale">
           <button data-v="1" class="on">1 — 10</button><button data-v="100">100 — 1000</button>
         </div>
       </div>
       <div>
-        <div class="text-xs text-slate-400 mb-2">نمط اللعب</div>
+        <div class="text-xs text-muted mb-2">نمط اللعب</div>
         <div class="seg" id="segMode">
           <button data-v="auto" class="on">تلقائي بالكتابة</button><button data-v="host">نمط المقدم</button>
         </div>
@@ -363,11 +419,11 @@
     <!-- categories -->
     <div class="glass rounded-2xl p-5 mb-5">
       <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
-        <div class="text-xs text-slate-400">التصنيفات المشاركة</div>
+        <div class="text-xs text-muted">التصنيفات المشاركة</div>
         <button class="btn text-xs" id="catAll">تحديد الكل / إلغاء</button>
       </div>
       <div id="catChips" class="flex flex-wrap gap-2"></div>
-      <div class="text-xs text-slate-500 mt-3" id="deckCount"></div>
+      <div class="text-xs text-muted mt-3" id="deckCount"></div>
     </div>
 
     <div class="flex flex-wrap gap-3 justify-center">
@@ -375,16 +431,16 @@
       <button class="btn" id="btnQM">⚙ إدارة الأسئلة وإضافة أسئلة جديدة</button>
       <button class="btn" id="btnOpenHostWin">🖥 فتح شاشة المقدم في نافذة مستقلة</button>
     </div>
-    <p class="text-center text-xs text-slate-500 mt-4">كل فريق يبدأ بـ 💡 تلميح واحد و ⚡ دبل نقاط واحد، ولديه ❌❌❌ ثلاث محاولات خاطئة في كل جولة.</p>
+    <p class="text-center text-xs text-muted mt-4">كل فريق يبدأ بـ 💡 تلميح واحد و ⚡ دبل نقاط واحد، ولديه ❌❌❌ ثلاث محاولات خاطئة في كل جولة.</p>
   </div>
 </section>
 
 <!-- ============================= DRAFT ============================= -->
 <section id="scr-draft" class="screen py-10">
   <div class="max-w-4xl mx-auto text-center">
-    <div class="text-sm text-slate-400 mb-1" id="draftRound"></div>
-    <h2 class="text-3xl font-bold mb-2">دور <span id="draftTeam" class="text-cyan-300"></span> في اختيار التصنيف</h2>
-    <p class="text-sm text-slate-400 mb-8">اختر تصنيف السؤال القادم — الفريق الذي يختار هو من يبدأ التخمين.</p>
+    <div class="text-sm text-muted mb-1" id="draftRound"></div>
+    <h2 class="text-3xl font-bold mb-2">دور <span id="draftTeam" class="text-accent"></span> في اختيار التصنيف</h2>
+    <p class="text-sm text-muted mb-8">اختر تصنيف السؤال القادم — الفريق الذي يختار هو من يبدأ التخمين.</p>
     <div id="draftGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
   </div>
 </section>
@@ -393,24 +449,22 @@
 <section id="scr-arena" class="screen py-4">
   <div class="max-w-7xl mx-auto">
 
-    <!-- top bar -->
-    <div class="glass rounded-2xl px-3 py-2 flex items-center gap-2 flex-wrap mb-3">
-      <span class="text-xs px-2.5 py-1 rounded-lg bg-white/10" id="barRound">الجولة 1</span>
-      <span class="text-xs px-2.5 py-1 rounded-lg bg-cyan-500/20 text-cyan-200" id="barCat">—</span>
+    <!-- top bar: شارتان وأزرار أيقونات صغيرة وزر رئيسي واحد -->
+    <div class="flex items-center gap-2 mb-3 flex-wrap">
+      <span class="text-sm px-3 py-1.5 rounded-xl bg-chip font-semibold whitespace-nowrap" id="barRound">الجولة 1</span>
+      <span class="text-sm px-3 py-1.5 rounded-xl bg-chip font-semibold truncate min-w-0 max-w-[55%]" id="barCat">—</span>
       <div class="flex-1"></div>
-      <button class="btn !py-1.5 !px-3 text-xs" id="btnMute">🔊 الصوت</button>
-      <button class="btn !py-1.5 !px-3 text-xs" id="btnModeToggle">النمط: تلقائي</button>
-      <button class="btn !py-1.5 !px-3 text-xs" id="btnHostDrawer">🎙 لوحة المقدم</button>
-      <button class="btn !py-1.5 !px-3 text-xs hidden sm:block" id="btnHostWin2">🖥 نافذة مستقلة</button>
-      <button class="btn !py-1.5 !px-3 text-xs btn-gold" id="btnRoundAction">كشف الإجابات المتبقية</button>
+      <button class="btn !px-2.5 !py-1.5" id="btnMute" title="الصوت" aria-label="الصوت">🔊</button>
+      <button class="btn !px-2.5 !py-1.5" id="btnModeToggle" title="تبديل النمط" aria-label="تبديل النمط">⌨️</button>
+      <button class="btn !px-2.5 !py-1.5" id="btnHostDrawer" title="لوحة المقدم" aria-label="لوحة المقدم">🎙</button>
+      <button class="btn !px-2.5 !py-1.5 hidden sm:block" id="btnHostWin2" title="نافذة المقدم المستقلة" aria-label="نافذة المقدم المستقلة">🖥</button>
+      <button class="btn btn-gold" id="btnRoundAction">كشف الباقي</button>
     </div>
 
     <!-- prompt -->
-    <div class="glass rounded-2xl p-4 mb-3 text-center relative overflow-hidden">
-      <div class="absolute inset-0 bg-gradient-to-l from-cyan-500/5 via-transparent to-fuchsia-500/5"></div>
-      <h2 class="relative text-xl sm:text-2xl font-bold leading-snug" id="qPrompt">—</h2>
-      <p class="relative text-xs sm:text-sm text-amber-200/80 mt-2" id="qDirection">—</p>
-      <p class="relative text-[11px] text-slate-500 mt-1">#1 = الأعلى إحصائياً (أقل النقاط) &nbsp;|&nbsp; #10 = الأقل ضمن القائمة (أعلى النقاط)</p>
+    <div class="glass rounded-2xl p-5 mb-3 text-center">
+      <h2 class="text-2xl sm:text-3xl font-bold leading-snug" id="qPrompt">—</h2>
+      <p class="text-sm sm:text-base text-muted mt-2" id="qDirection">—</p>
     </div>
 
     <div class="arena-grid">
@@ -418,29 +472,29 @@
       <!-- team 1 -->
       <div class="team-card glass rounded-2xl p-3" id="tc0">
         <div class="flex items-center justify-between gap-2">
-          <div class="font-bold text-sm truncate" id="tc0name">الفريق الأول</div>
-          <div class="text-2xl font-bold tabular-nums" id="tc0score">0</div>
+          <div class="font-bold text-lg truncate" id="tc0name">الفريق الأول</div>
+          <div class="text-4xl font-bold tabular-nums leading-none" id="tc0score">0</div>
         </div>
         <div class="flex items-center gap-1.5 mt-2.5">
           <div class="strike-slot" data-s="0">❌</div><div class="strike-slot" data-s="1">❌</div><div class="strike-slot" data-s="2">❌</div>
           <div class="flex-1"></div>
-          <div class="text-xs" id="tc0streak">🔥 0</div>
+          <div class="text-sm font-semibold" id="tc0streak">🔥 0</div>
         </div>
         <div class="flex gap-1.5 mt-2.5">
-          <button class="btn !py-1.5 !px-2 text-xs flex-1" data-hint="0">💡 <span id="tc0hints">1</span></button>
-          <button class="btn !py-1.5 !px-2 text-xs flex-1" data-dbl="0">⚡ دبل 2x</button>
+          <button class="btn !py-2 text-sm flex-1" data-hint="0">💡 <span id="tc0hints">1</span></button>
+          <button class="btn !py-2 text-sm flex-1" data-dbl="0">⚡ دبل 2x</button>
         </div>
-        <div class="text-[11px] text-slate-500 mt-2" id="tc0tag"></div>
+        <div class="text-xs text-muted mt-2" id="tc0tag"></div>
       </div>
 
       <!-- center -->
       <div>
         <div class="glass rounded-2xl p-3 mb-3">
-          <div class="flex items-center justify-between text-xs mb-1.5">
+          <div class="flex items-center justify-between text-base mb-2">
             <span id="turnLabel" class="font-semibold">دور: —</span>
-            <span id="timerText" class="tabular-nums text-slate-300">—</span>
+            <span id="timerText" class="tabular-nums text-muted">—</span>
           </div>
-          <div class="h-2.5 rounded-full bg-white/10 overflow-hidden">
+          <div class="h-3 rounded-full bg-chip overflow-hidden">
             <div id="timerFill" class="timer-fill h-full w-full rounded-full bg-gradient-to-l from-cyan-400 to-blue-500"></div>
           </div>
         </div>
@@ -450,31 +504,31 @@
       <!-- team 2 -->
       <div class="team-card glass rounded-2xl p-3" id="tc1">
         <div class="flex items-center justify-between gap-2">
-          <div class="font-bold text-sm truncate" id="tc1name">الفريق الثاني</div>
-          <div class="text-2xl font-bold tabular-nums" id="tc1score">0</div>
+          <div class="font-bold text-lg truncate" id="tc1name">الفريق الثاني</div>
+          <div class="text-4xl font-bold tabular-nums leading-none" id="tc1score">0</div>
         </div>
         <div class="flex items-center gap-1.5 mt-2.5">
           <div class="strike-slot" data-s="0">❌</div><div class="strike-slot" data-s="1">❌</div><div class="strike-slot" data-s="2">❌</div>
           <div class="flex-1"></div>
-          <div class="text-xs" id="tc1streak">🔥 0</div>
+          <div class="text-sm font-semibold" id="tc1streak">🔥 0</div>
         </div>
         <div class="flex gap-1.5 mt-2.5">
-          <button class="btn !py-1.5 !px-2 text-xs flex-1" data-hint="1">💡 <span id="tc1hints">1</span></button>
-          <button class="btn !py-1.5 !px-2 text-xs flex-1" data-dbl="1">⚡ دبل 2x</button>
+          <button class="btn !py-2 text-sm flex-1" data-hint="1">💡 <span id="tc1hints">1</span></button>
+          <button class="btn !py-2 text-sm flex-1" data-dbl="1">⚡ دبل 2x</button>
         </div>
-        <div class="text-[11px] text-slate-500 mt-2" id="tc1tag"></div>
+        <div class="text-xs text-muted mt-2" id="tc1tag"></div>
       </div>
     </div>
 
     <!-- bottom input -->
     <div class="glass rounded-2xl p-3 mt-3" id="answerBar">
       <form id="guessForm" class="flex gap-2 flex-wrap">
-        <input id="guessInput" placeholder="اكتب إجابتك هنا…" autocomplete="off" class="flex-1 !py-3 text-base min-w-[12rem]">
-        <button type="submit" class="btn btn-primary !py-3 px-6">تأكيد الإجابة</button>
-        <button type="button" class="btn !py-3" id="btnPass">تمرير الدور</button>
-        <button type="button" class="btn btn-danger !py-3" id="btnManualStrike">احتساب خطأ ❌</button>
+        <input id="guessInput" placeholder="اكتب إجابتك هنا…" autocomplete="off" class="flex-1 !py-3.5 !text-lg min-w-[12rem]">
+        <button type="submit" class="btn btn-primary !py-3.5 px-7 !text-lg">تأكيد</button>
+        <button type="button" class="btn !py-3.5" id="btnPass">تمرير</button>
+        <button type="button" class="btn btn-danger !py-3.5" id="btnManualStrike">خطأ ❌</button>
       </form>
-      <div class="text-[11px] text-slate-500 mt-2" id="hintNote"></div>
+      <div class="text-[11px] text-muted mt-2" id="hintNote"></div>
     </div>
   </div>
 </section>
@@ -485,9 +539,9 @@
     <div class="glass rounded-2xl p-4 mb-3">
       <div class="flex items-center gap-2 flex-wrap">
         <span class="text-lg font-bold">🎙 لوحة المقدم</span>
-        <span class="text-[11px] px-2 py-0.5 rounded bg-rose-500/25 text-rose-200">لا تعرض هذه الشاشة للاعبين</span>
+        <span class="text-[11px] px-2 py-0.5 rounded bg-badge-bad text-bad">لا تعرض هذه الشاشة للاعبين</span>
         <div class="flex-1"></div>
-        <span id="hostLink" class="text-[11px] text-slate-400">—</span>
+        <span id="hostLink" class="text-[11px] text-muted">—</span>
       </div>
     </div>
     <div id="hostBody"></div>
@@ -497,10 +551,10 @@
 <!-- ============================= HOST DRAWER (in-page) ============================= -->
 <div class="modal" id="drawer">
   <div class="modal-bd" data-close="drawer"></div>
-  <div class="glass rounded-2xl relative w-[min(100vw-2rem,40rem)] max-h-[88vh] flex flex-col">
+  <div class="glass rounded-2xl relative w-[min(100%-2rem,40rem)] max-h-[88vh] flex flex-col">
     <div class="p-4 border-b border-white/10 flex items-center gap-2">
       <span class="font-bold">🎙 لوحة المقدم</span>
-      <span class="text-[11px] px-2 py-0.5 rounded bg-rose-500/25 text-rose-200">تحتوي الإجابات كاملة</span>
+      <span class="text-[11px] px-2 py-0.5 rounded bg-badge-bad text-bad">تحتوي الإجابات كاملة</span>
       <div class="flex-1"></div>
       <button class="btn !py-1 !px-3 text-xs" data-close="drawer">إغلاق</button>
     </div>
@@ -511,7 +565,7 @@
 <!-- ============================= QUESTION MANAGER ============================= -->
 <div class="modal" id="qm">
   <div class="modal-bd" data-close="qm"></div>
-  <div class="glass rounded-2xl relative w-[min(100vw-2rem,56rem)] h-[88vh] flex flex-col">
+  <div class="glass rounded-2xl relative w-[min(100%-2rem,56rem)] h-[88vh] flex flex-col">
     <div class="p-4 border-b border-white/10 flex items-center gap-2 flex-wrap">
       <span class="font-bold">إدارة الأسئلة</span>
       <div class="flex-1"></div>
@@ -524,7 +578,7 @@
     </div>
     <div class="flex-1 grid md:grid-cols-[18rem_1fr] min-h-0">
       <div class="scroll-y border-b md:border-b-0 md:border-l border-white/10 p-2" id="qmList"></div>
-      <div class="scroll-y p-4" id="qmEditor"><p class="text-sm text-slate-500">اختر سؤالاً من القائمة لتعديله، أو أضف سؤالاً جديداً.</p></div>
+      <div class="scroll-y p-4" id="qmEditor"><p class="text-sm text-muted">اختر سؤالاً من القائمة لتعديله، أو أضف سؤالاً جديداً.</p></div>
     </div>
   </div>
 </div>
@@ -532,7 +586,7 @@
 <!-- ============================= TEXT BOX (export / share link) ============================= -->
 <div class="modal" id="box">
   <div class="modal-bd" data-close="box"></div>
-  <div class="glass rounded-2xl relative w-[min(100vw-2rem,38rem)] p-4">
+  <div class="glass rounded-2xl relative w-[min(100%-2rem,38rem)] p-4">
     <p class="text-sm mb-2" id="boxMsg"></p>
     <textarea id="boxText" rows="10" readonly class="font-mono text-[11px] leading-relaxed"></textarea>
     <div class="flex gap-2 mt-3 justify-end flex-wrap">
@@ -545,10 +599,10 @@
 <!-- ============================= PODIUM ============================= -->
 <div class="modal" id="podium">
   <div class="modal-bd"></div>
-  <div class="glass rounded-2xl relative w-[min(100vw-2rem,46rem)] max-h-[92vh] scroll-y p-6 text-center">
+  <div class="glass rounded-2xl relative w-[min(100%-2rem,46rem)] max-h-[92vh] scroll-y p-6 text-center">
     <div class="trophy text-6xl mb-2">🏆</div>
     <h2 class="text-3xl font-bold mb-1" id="podWinner">—</h2>
-    <p class="text-sm text-slate-400 mb-6" id="podSub">—</p>
+    <p class="text-sm text-muted mb-6" id="podSub">—</p>
     <div class="flex items-end justify-center gap-6 h-44 mb-6" id="podBars"></div>
     <div class="grid sm:grid-cols-2 gap-3 text-right mb-6" id="podStats"></div>
     <div class="flex gap-3 justify-center flex-wrap">
@@ -1002,7 +1056,7 @@ const S = {
   q:null,
   revealed:new Array(10).fill(null),   // {team, pts, double} | {missed:true}
   clues:new Array(10).fill(null),
-  teams:[newTeam("الفريق الأول","#22d3ee"), newTeam("الفريق الثاني","#f472b6")],
+  teams:[newTeam("الفريق الأول","#0284C7"), newTeam("الفريق الثاني","#DB2777")],
   active:0,
   drafter:0,
   hintMode:false,
@@ -1155,10 +1209,10 @@ function toDraft(){
   grid.innerHTML = "";
   Object.keys(byCat).forEach(cat => {
     const card = document.createElement("button");
-    card.className = "glass rounded-2xl p-5 text-right hover:bg-white/10 transition";
+    card.className = "glass rounded-2xl p-5 text-right hover:bg-chip transition";
     card.innerHTML =
       '<div class="text-lg font-bold mb-1">' + esc(cat) + '</div>' +
-      '<div class="text-xs text-slate-400">' + byCat[cat].length + ' سؤال متاح</div>';
+      '<div class="text-xs text-muted">' + byCat[cat].length + ' سؤال متاح</div>';
     card.addEventListener("click", () => {
       const pool = byCat[cat];
       startRound(pool[(Math.random() * pool.length) | 0]);
@@ -1166,9 +1220,9 @@ function toDraft(){
     grid.appendChild(card);
   });
   const rnd = document.createElement("button");
-  rnd.className = "glass rounded-2xl p-5 text-right hover:bg-white/10 transition border-dashed";
+  rnd.className = "glass rounded-2xl p-5 text-right hover:bg-chip transition border-dashed";
   rnd.innerHTML = '<div class="text-lg font-bold mb-1">🎲 تصنيف عشوائي</div>' +
-                  '<div class="text-xs text-slate-400">اترك القرار للحظ</div>';
+                  '<div class="text-xs text-muted">اترك القرار للحظ</div>';
   rnd.addEventListener("click", () => startRound(rem[(Math.random() * rem.length) | 0]));
   grid.appendChild(rnd);
   broadcastState();
@@ -1232,8 +1286,45 @@ function award(rank, teamIdx, viaDouble){
   renderArena();
   passTurn();
   checkRoundEnd();
+  showAnswerBox(rank, t, total, !!viaDouble);
   broadcastState();
 }
+
+/* ══ صندوق الإجابة الصحيحة ══
+   يعرض البطاقة المكشوفة خمس ثوانٍ، والمؤقت متوقف طوال ظهوره
+   حتى لا يأكل من وقت الفريق التالي، ثم يُستأنف عند إخفائه. */
+let answerBoxTimer = null;
+function showAnswerBox(rank, team, points, isDouble){
+  const a = answerByRank(rank);
+  if(!a) return;
+  const box = $("#answerReveal");
+  const tier = rank <= 3 ? ["var(--good-soft)","var(--good)"]
+             : rank <= 7 ? ["var(--warn-soft)","var(--warn)"]
+                         : ["var(--bad-soft)","var(--bad)"];
+  const badge = $("#arBadge");
+  badge.textContent = "#" + rank;
+  badge.style.background = tier[0];
+  badge.style.color = tier[1];
+  $("#arLabel").textContent = a.label_ar;
+  $("#arMetric").textContent = a.metric || "";
+  $("#arTeam").innerHTML = '<span style="color:' + esc(team.color) + '">' + esc(team.name) + '</span>'
+    + ' &nbsp;+' + points + (isDouble ? " (2x)" : "");
+
+  stopTimer();
+  box.classList.remove("show");
+  void box.offsetWidth;          // إعادة تشغيل حركة الشريط
+  box.classList.add("show");
+  clearTimeout(answerBoxTimer);
+  answerBoxTimer = setTimeout(hideAnswerBox, 5000);
+}
+function hideAnswerBox(){
+  clearTimeout(answerBoxTimer);
+  const box = $("#answerReveal");
+  if(!box.classList.contains("show")) return;
+  box.classList.remove("show");
+  if(!S.roundOver && S.screen === "arena") startTimer();
+}
+document.getElementById("answerReveal").addEventListener("click", hideAnswerBox);
 
 function giveStrike(teamIdx){
   if(S.roundOver || !S.q) return;
@@ -1371,11 +1462,11 @@ function renderBoard(){
     let ownerHTML = "";
     if(rv && !rv.missed){
       const t = S.teams[rv.team];
-      ownerHTML = '<div class="text-[10px] px-1.5 py-0.5 rounded" style="background:' +
+      ownerHTML = '<div class="text-xs font-semibold px-2 py-0.5 rounded-md whitespace-nowrap" style="background:' +
         esc(t.color) + '22;border:1px solid ' + esc(t.color) + '66;color:' + esc(t.color) + '">' +
         esc(t.name) + ' · +' + rv.pts + (rv.double ? ' (2x)' : '') + '</div>';
     }else if(rv && rv.missed){
-      ownerHTML = '<div class="text-[10px] px-1.5 py-0.5 rounded bg-slate-500/20 border border-slate-400/30">لم يتم تخمينها (0)</div>';
+      ownerHTML = '<div class="text-xs px-2 py-0.5 rounded-md bg-slate-200 text-slate-600 whitespace-nowrap">لم تُخمَّن</div>';
     }
 
     // الوجه المخفي: نخفي الإجابة في شاشة العرض دائماً
@@ -1385,9 +1476,9 @@ function renderBoard(){
         '<div class="face front">' +
           '<div class="rank-badge">#' + r + '</div>' +
           '<div class="min-w-0">' +
-            '<div class="text-sm font-semibold">' + ptsTxt + '</div>' +
-            '<div class="text-[10px] text-slate-400">' +
-              (r <= 3 ? "منطقة الأمان" : r <= 7 ? "منطقة متوسطة" : "منطقة الخطر — قنص") +
+            '<div class="text-lg font-bold">' + ptsTxt + '</div>' +
+            '<div class="text-xs text-muted">' +
+              (r <= 3 ? "أمان" : r <= 7 ? "متوسط" : "خطر — قنص") +
             '</div>' +
           '</div>' +
           (clue ? '<div class="clue-badge">💡 ' + esc(clue) + '</div>' : '') +
@@ -1395,8 +1486,8 @@ function renderBoard(){
         '<div class="face back">' +
           '<div class="rank-badge">#' + r + '</div>' +
           '<div class="min-w-0 flex-1">' +
-            '<div class="text-sm font-bold truncate">' + esc(hidden ? "—" : a.label_ar) + '</div>' +
-            '<div class="text-[10px] text-slate-400 truncate">' + esc(hidden ? "" : (a.metric || "")) + '</div>' +
+            '<div class="text-lg font-bold truncate">' + esc(hidden ? "—" : a.label_ar) + '</div>' +
+            '<div class="text-xs text-muted truncate">' + esc(hidden ? "" : (a.metric || "")) + '</div>' +
           '</div>' +
           ownerHTML +
         '</div>' +
@@ -1607,10 +1698,10 @@ $("#drawer").querySelectorAll("[data-close]").forEach(b =>
 
 function renderDrawer(){
   const box = $("#drawerBody");
-  if(!S.q){ box.innerHTML = '<p class="text-sm text-slate-400">لا توجد جولة نشطة.</p>'; return; }
+  if(!S.q){ box.innerHTML = '<p class="text-sm text-muted">لا توجد جولة نشطة.</p>'; return; }
   const at = S.teams[S.active];
   let h = '<div class="text-sm mb-1 font-semibold">' + esc(S.q.prompt) + '</div>' +
-          '<div class="text-xs text-slate-400 mb-3">الدور الحالي: <b style="color:' + esc(at.color) + '">' +
+          '<div class="text-xs text-muted mb-3">الدور الحالي: <b style="color:' + esc(at.color) + '">' +
           esc(at.name) + '</b></div>' +
           '<div class="flex gap-2 mb-3 flex-wrap">' +
             '<button class="btn btn-danger !py-1.5 !px-3 text-xs" data-act="strike">❌ خطأ (Strike)</button>' +
@@ -1623,10 +1714,10 @@ function renderDrawer(){
     h += '<div class="akey' + (done ? ' done' : '') + '">' +
            '<span class="rank-badge !w-8 !h-8 !text-xs">#' + a.rank + '</span>' +
            '<span class="flex-1 min-w-0"><b class="text-sm">' + esc(a.label_ar) + '</b>' +
-             '<span class="block text-[11px] text-slate-400 truncate">' + esc(a.metric || "") + '</span></span>' +
-           '<span class="text-xs text-slate-400 whitespace-nowrap">' + fmtPts(pts(a.rank)) + '</span>' +
+             '<span class="block text-[11px] text-muted truncate">' + esc(a.metric || "") + '</span></span>' +
+           '<span class="text-xs text-muted whitespace-nowrap">' + fmtPts(pts(a.rank)) + '</span>' +
            (done
-             ? '<span class="text-[11px] text-slate-500 whitespace-nowrap">' +
+             ? '<span class="text-[11px] text-muted whitespace-nowrap">' +
                  (rv.missed ? 'لم تُخمّن' : 'للفريق: ' + esc(S.teams[rv.team].name)) + '</span>'
              : '<button class="btn !py-1 !px-2 text-[11px]" data-award="' + a.rank + '">منح للفريق النشط</button>') +
          '</div>';
@@ -1768,8 +1859,8 @@ const HOST = {
     $("#hostLink").textContent = chan ? "متصل بشاشة العرض" : "المتصفح لا يدعم BroadcastChannel";
     if(!st){
       body.innerHTML = '<div class="glass rounded-2xl p-6 text-center">' +
-        '<p class="text-sm text-slate-300 mb-2">في انتظار شاشة اللعب…</p>' +
-        '<p class="text-xs text-slate-500">افتح اللعبة في نافذة أخرى واضغط «فتح شاشة المقدم»، أو ابدأ مباراة هناك.</p></div>';
+        '<p class="text-sm text-muted mb-2">في انتظار شاشة اللعب…</p>' +
+        '<p class="text-xs text-muted">افتح اللعبة في نافذة أخرى واضغط «فتح شاشة المقدم»، أو ابدأ مباراة هناك.</p></div>';
       return;
     }
     if(st.screen === "draft"){
@@ -1777,21 +1868,21 @@ const HOST = {
       body.innerHTML =
         '<div class="glass rounded-2xl p-4 mb-3"><div class="text-sm">الجولة ' + (st.roundNo + 1) +
         ' — دور <b style="color:' + esc(dt.color) + '">' + esc(dt.name) + '</b> في اختيار التصنيف</div>' +
-        '<p class="text-xs text-slate-400 mt-1">اختر من شاشة العرض، أو اضغط هنا لاختيار عشوائي.</p>' +
+        '<p class="text-xs text-muted mt-1">اختر من شاشة العرض، أو اضغط هنا لاختيار عشوائي.</p>' +
         '<button class="btn !py-1.5 !px-3 text-xs mt-2" id="hDraftRnd">🎲 تصنيف عشوائي</button></div>';
       const b = $("#hDraftRnd"); if(b) b.onclick = () => hostSend("draft");
       return;
     }
     if(!st.q){
-      body.innerHTML = '<div class="glass rounded-2xl p-6 text-sm text-slate-400">لا توجد جولة نشطة على شاشة العرض.</div>';
+      body.innerHTML = '<div class="glass rounded-2xl p-6 text-sm text-muted">لا توجد جولة نشطة على شاشة العرض.</div>';
       return;
     }
     const at = st.teams[st.active];
     let h = '';
     h += '<div class="glass rounded-2xl p-4 mb-3">' +
-           '<div class="flex items-center gap-2 text-xs text-slate-400 mb-1">' +
-             '<span class="px-2 py-0.5 rounded bg-white/10">الجولة ' + st.roundNo + ' / ' + st.roundsTotal + '</span>' +
-             '<span class="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-200">' + esc(st.q.category) + '</span>' +
+           '<div class="flex items-center gap-2 text-xs text-muted mb-1">' +
+             '<span class="px-2 py-0.5 rounded bg-chip">الجولة ' + st.roundNo + ' / ' + st.roundsTotal + '</span>' +
+             '<span class="px-2 py-0.5 rounded bg-chip text-accent">' + esc(st.q.category) + '</span>' +
              '<span class="flex-1"></span>' +
              '<span>' + (st.timerDur ? Math.ceil(st.timeLeft) + " ث" : "بدون مؤقت") + '</span>' +
            '</div>' +
@@ -1803,7 +1894,7 @@ const HOST = {
            (i === st.active ? ' style="--tw-ring-color:' + esc(t.color) + '"' : '') + '>' +
              '<div class="flex items-center justify-between"><b class="text-xs truncate" style="color:' +
                esc(t.color) + '">' + esc(t.name) + '</b><span class="text-lg font-bold">' + t.score + '</span></div>' +
-             '<div class="text-[11px] text-slate-400 mt-1">' +
+             '<div class="text-[11px] text-muted mt-1">' +
                '❌ ' + t.strikes + '/3 · 🔥 ' + t.streak + ' · 💡 ' + t.hints +
                (t.dblArmed ? ' · ⚡ مُجهّز' : (t.dblAvailable ? ' · ⚡ متاح' : ' · ⚡ استُخدم')) +
                (t.locked ? ' · خارج الجولة' : '') +
@@ -1819,7 +1910,7 @@ const HOST = {
            (st.roundOver ? '<button class="btn btn-primary !py-2 !px-3 text-xs" data-h="next">' +
               (st.hasNext ? 'الجولة التالية ▶' : '🏆 النتيجة النهائية') + '</button>' : '') +
          '</div>';
-    h += '<div class="glass rounded-2xl p-3"><div class="text-xs text-slate-400 mb-2">مفتاح الإجابات — الدور الحالي: <b style="color:' +
+    h += '<div class="glass rounded-2xl p-3"><div class="text-xs text-muted mb-2">مفتاح الإجابات — الدور الحالي: <b style="color:' +
          esc(at.color) + '">' + esc(at.name) + '</b></div><div class="flex flex-col gap-1.5">';
     st.q.answers.slice().sort((a, b) => a.rank - b.rank).forEach(a => {
       const rv = st.revealed[a.rank - 1];
@@ -1827,11 +1918,11 @@ const HOST = {
       h += '<div class="akey' + (done ? ' done' : '') + '">' +
              '<span class="rank-badge !w-8 !h-8 !text-xs">#' + a.rank + '</span>' +
              '<span class="flex-1 min-w-0"><b class="text-sm">' + esc(a.label_ar) + '</b>' +
-               '<span class="block text-[11px] text-slate-400">' + esc(a.metric || "") + '</span>' +
-               '<span class="block text-[10px] text-amber-200/70">' + esc(a.hint || "") + '</span></span>' +
-             '<span class="text-xs text-slate-400 whitespace-nowrap">' + (a.rank * st.pointScale) + '</span>' +
+               '<span class="block text-[11px] text-muted">' + esc(a.metric || "") + '</span>' +
+               '<span class="block text-[10px] text-warn/70">' + esc(a.hint || "") + '</span></span>' +
+             '<span class="text-xs text-muted whitespace-nowrap">' + (a.rank * st.pointScale) + '</span>' +
              (done
-               ? '<span class="text-[11px] text-slate-500 whitespace-nowrap">' +
+               ? '<span class="text-[11px] text-muted whitespace-nowrap">' +
                    (rv.missed ? 'لم تُخمّن' : esc(st.teams[rv.team].name)) + '</span>'
                : '<span class="flex gap-1">' +
                    '<button class="btn !py-1 !px-2 text-[11px]" data-hostaward="' + a.rank + '">منح</button>' +
@@ -1887,7 +1978,7 @@ function showPodium(){
     const acc = t.attempts ? Math.round((t.correct / t.attempts) * 100) : 0;
     return '<div class="glass rounded-xl p-3">' +
              '<div class="text-sm font-bold mb-2" style="color:' + esc(t.color) + '">' + esc(t.name) + '</div>' +
-             '<div class="text-xs text-slate-300 space-y-1">' +
+             '<div class="text-xs text-muted space-y-1">' +
                '<div>🎯 أفضل قنصة: ' + (t.bestSnipe ? "#" + t.bestSnipe : "لا شيء في منطقة الخطر") + '</div>' +
                '<div>📊 نسبة الدقة: ' + acc + '% (' + t.correct + ' من ' + t.attempts + ')</div>' +
                '<div>🔥 أطول سلسلة: ' + t.longestStreak + '</div>' +
@@ -1922,13 +2013,13 @@ function openQM(){ renderQMList(); openModal("qm"); }
 function renderQMList(){
   const list = $("#qmList");
   const all = Store.all();
-  list.innerHTML = '<div class="text-[11px] text-slate-500 px-2 py-1">' + all.length + ' سؤالاً في البنك</div>';
+  list.innerHTML = '<div class="text-[11px] text-muted px-2 py-1">' + all.length + ' سؤالاً في البنك</div>';
   all.forEach(q => {
     const b = document.createElement("button");
-    b.className = "w-full text-right rounded-xl px-3 py-2 mb-1 hover:bg-white/10 transition " +
-                  (qmSelected === q.id ? "bg-white/10" : "");
-    b.innerHTML = '<div class="text-xs text-cyan-300">' + esc(q.category) +
-                  (Store.isCustom(q.id) ? ' · <span class="text-amber-300">مخصص</span>' : '') + '</div>' +
+    b.className = "w-full text-right rounded-xl px-3 py-2 mb-1 hover:bg-chip transition " +
+                  (qmSelected === q.id ? "bg-chip" : "");
+    b.innerHTML = '<div class="text-xs text-accent">' + esc(q.category) +
+                  (Store.isCustom(q.id) ? ' · <span class="text-warn">مخصص</span>' : '') + '</div>' +
                   '<div class="text-sm leading-snug">' + esc(q.prompt) + '</div>';
     b.addEventListener("click", () => { qmSelected = q.id; renderQMList(); renderQMEditor(q); });
     list.appendChild(b);
@@ -1951,16 +2042,16 @@ function renderQMEditor(q){
   const box = $("#qmEditor");
   const isNew = !Store.all().some(x => x.id === q.id);
   let h = '<div class="grid sm:grid-cols-2 gap-3 mb-3">' +
-            '<label class="block"><span class="text-xs text-slate-400">المعرّف (id)</span>' +
+            '<label class="block"><span class="text-xs text-muted">المعرّف (id)</span>' +
               '<input id="eId" value="' + esc(q.id) + '"' + (isNew ? '' : ' readonly') + '></label>' +
-            '<label class="block"><span class="text-xs text-slate-400">التصنيف</span>' +
+            '<label class="block"><span class="text-xs text-muted">التصنيف</span>' +
               '<input id="eCat" value="' + esc(q.category) + '"></label>' +
           '</div>' +
-          '<label class="block mb-3"><span class="text-xs text-slate-400">نص السؤال</span>' +
+          '<label class="block mb-3"><span class="text-xs text-muted">نص السؤال</span>' +
             '<input id="ePrompt" value="' + esc(q.prompt) + '"></label>' +
-          '<label class="block mb-4"><span class="text-xs text-slate-400">سطر الاتجاه</span>' +
+          '<label class="block mb-4"><span class="text-xs text-muted">سطر الاتجاه</span>' +
             '<input id="eDir" value="' + esc(q.direction || "") + '"></label>' +
-          '<div class="text-xs text-slate-400 mb-2">الإجابات العشر (المرتبة #1 = الأعلى إحصائياً)</div>' +
+          '<div class="text-xs text-muted mb-2">الإجابات العشر (المرتبة #1 = الأعلى إحصائياً)</div>' +
           '<div class="flex flex-col gap-2">';
   for(let i = 0; i < 10; i++){
     const a = q.answers[i] || { rank:i + 1 };
@@ -2017,7 +2108,7 @@ function renderQMEditor(q){
     Store.remove(q.id);
     qmSelected = null;
     renderQMList(); renderCatChips();
-    $("#qmEditor").innerHTML = '<p class="text-sm text-slate-500">تم حذف السؤال من البنك.</p>';
+    $("#qmEditor").innerHTML = '<p class="text-sm text-muted">تم حذف السؤال من البنك.</p>';
     toast("تم حذف السؤال", "warn");
   });
 }
@@ -2056,7 +2147,7 @@ $("#qmReset").addEventListener("click", () => {
   Store.resetAll();
   qmSelected = null;
   renderQMList(); renderCatChips();
-  $("#qmEditor").innerHTML = '<p class="text-sm text-slate-500">تمت استعادة بنك الأسئلة الافتراضي.</p>';
+  $("#qmEditor").innerHTML = '<p class="text-sm text-muted">تمت استعادة بنك الأسئلة الافتراضي.</p>';
   toast("تمت استعادة الأسئلة الافتراضية", "warn");
 });
 
