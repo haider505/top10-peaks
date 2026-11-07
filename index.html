@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>توب تن بيكس — خمن بالمقلوب</title>
+<script>/* الوضع الليلي يُطبَّق قبل الرسم حتى لا تومض الواجهة الفاتحة */
+try{ if(localStorage.getItem("top10_theme") === "dark") document.documentElement.classList.add("dark"); }catch(e){}</script>
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -320,6 +322,59 @@
   }
   .akey.done{ opacity:.5; background:#F4F7FC; }
 
+  /* ===== الوضع الليلي: نفس المتغيرات بقيم داكنة + الألوان الثابتة القليلة ===== */
+  :root.dark{
+    color-scheme:dark;
+    --bg:#0F1524;
+    --bg2:#151C2E;
+    --surface:#182136;
+    --line:#2A3550;
+    --line-soft:#222C44;
+    --ink:#E6ECF7;
+    --muted:#9AA8C2;
+    --accent:#3B82F6;
+    --accent-soft:#1C2B4D;
+    --good:#34D399;
+    --good-soft:#0E3A2D;
+    --warn:#FBBF24;
+    --warn-soft:#3A2C0C;
+    --bad:#FB7185;
+    --bad-soft:#431828;
+    --shadow:0 2px 4px rgba(0,0,0,.25), 0 8px 24px -8px rgba(0,0,0,.55);
+    --shadow-lg:0 8px 20px -6px rgba(0,0,0,.5), 0 24px 48px -16px rgba(0,0,0,.6);
+  }
+  :root.dark .bg-aura::before{ background:radial-gradient(circle,#1E3A8A 0%,transparent 70%); opacity:.45; }
+  :root.dark .bg-aura::after{ background:radial-gradient(circle,#701A45 0%,transparent 70%); opacity:.35; }
+  :root.dark .rank-badge{ background:#1F2940; }
+  :root.dark .tier-safe .rank-badge{ border-color:#065F46; }
+  :root.dark .tier-mid  .rank-badge{ border-color:#78520F; }
+  :root.dark .tier-risk .rank-badge{ border-color:#7F1D3A; }
+  :root.dark .tier-risk .face.front{ border-color:#5B2140; }
+  :root.dark .clue-badge{ border-color:#78520F; }
+  :root.dark .face.back{ background:#1B2742; }
+  :root.dark .card.missed .face.back{ background:#141B2B; }
+  :root.dark .card.missed .rank-badge{ background:#141B2B; }
+  :root.dark #answerReveal{ background:rgba(0,0,0,.5); }
+  :root.dark .strike-slot{ background:#1F2940; color:#4A5878; }
+  :root.dark .strike-slot.on{ background:var(--bad-soft); border-color:#9F1239; color:var(--bad); }
+  :root.dark .chip:hover,
+  :root.dark .seg button:hover{ border-color:#3A4E7A; }
+  :root.dark .btn{ box-shadow:0 1px 2px rgba(0,0,0,.3); }
+  :root.dark .btn:hover:not(:disabled){ background:#222D47; border-color:#3A4E7A; }
+  :root.dark .btn-primary:hover:not(:disabled){ background:#2563EB; border-color:#2563EB; }
+  :root.dark .btn-danger{ border-color:#9F1239; }
+  :root.dark .btn-danger:hover:not(:disabled){ background:#5A1E33; border-color:#FB7185; }
+  :root.dark .modal-bd{ background:rgba(0,0,0,.6); }
+  :root.dark input::placeholder,
+  :root.dark textarea::placeholder{ color:#6B7A96; }
+  :root.dark select option{ background:var(--surface); }
+  :root.dark .scroll-y::-webkit-scrollbar-thumb{ background:#34405C; }
+  :root.dark .akey.done{ background:#141B2B; }
+  :root.dark .bg-slate-200{ background:#222C44; }
+  :root.dark .text-slate-600{ color:var(--muted); }
+  /* العنوان المتدرّج: درجات أفتح لتبقى مقروءة على الخلفية الداكنة */
+  :root.dark h1.bg-clip-text{ background-image:linear-gradient(to left,#60A5FA,#A78BFA,#E879F9); }
+
   @media (prefers-reduced-motion: reduce){
     *{ animation-duration:.01ms !important; transition-duration:.01ms !important; }
   }
@@ -352,6 +407,9 @@
 <section id="scr-setup" class="screen active py-8">
   <div class="max-w-5xl mx-auto">
     <header class="text-center mb-8">
+      <div class="flex justify-end mb-2">
+        <button class="btn text-sm !py-1.5 theme-toggle" data-long="1">🌙 الوضع الليلي</button>
+      </div>
       <div class="inline-flex items-center gap-3 mb-3">
         <svg width="46" height="46" viewBox="0 0 48 48" fill="none">
           <defs><linearGradient id="lg1" x1="0" y1="0" x2="1" y2="1">
@@ -454,6 +512,7 @@
       <span class="text-sm px-3 py-1.5 rounded-xl bg-chip font-semibold whitespace-nowrap" id="barRound">الجولة 1</span>
       <span class="text-sm px-3 py-1.5 rounded-xl bg-chip font-semibold truncate min-w-0 max-w-[55%]" id="barCat">—</span>
       <div class="flex-1"></div>
+      <button class="btn !px-2.5 !py-1.5 theme-toggle" title="الوضع الليلي" aria-label="الوضع الليلي">🌙</button>
       <button class="btn !px-2.5 !py-1.5" id="btnMute" title="الصوت" aria-label="الصوت">🔊</button>
       <button class="btn !px-2.5 !py-1.5" id="btnModeToggle" title="تبديل النمط" aria-label="تبديل النمط">⌨️</button>
       <button class="btn !px-2.5 !py-1.5" id="btnHostDrawer" title="لوحة المقدم" aria-label="لوحة المقدم">🎙</button>
@@ -1080,9 +1139,9 @@ const tierOf = r => r <= 3 ? "tier-safe" : (r <= 7 ? "tier-mid" : "tier-risk");
 function toast(msg, kind){
   const el = document.createElement("div");
   el.className = "toast";
-  if(kind === "warn"){ el.style.borderColor = "rgba(251,191,36,.6)"; el.style.color = "#fde68a"; }
-  if(kind === "bad"){  el.style.borderColor = "rgba(244,63,94,.6)";  el.style.color = "#fecdd3"; }
-  if(kind === "good"){ el.style.borderColor = "rgba(16,185,129,.6)"; el.style.color = "#a7f3d0"; }
+  if(kind === "warn"){ el.style.borderColor = "rgba(251,191,36,.6)"; el.style.color = "var(--warn)"; }
+  if(kind === "bad"){  el.style.borderColor = "rgba(244,63,94,.6)";  el.style.color = "var(--bad)"; }
+  if(kind === "good"){ el.style.borderColor = "rgba(16,185,129,.6)"; el.style.color = "var(--good)"; }
   el.textContent = msg;
   $("#toasts").appendChild(el);
   setTimeout(() => el.remove(), 3100);
@@ -1957,7 +2016,7 @@ function showPodium(){
   const [a, b] = S.teams;
   const win = a.score === b.score ? null : (a.score > b.score ? a : b);
   $("#podWinner").textContent = win ? ("🎉 " + win.name + " يفوز!") : "تعادل مثير!";
-  $("#podWinner").style.color = win ? win.color : "#e2e8f0";
+  $("#podWinner").style.color = win ? win.color : "var(--muted)";
   $("#podSub").textContent = a.name + " " + a.score + "  —  " + b.name + " " + b.score +
     "  ·  " + S.roundNo + " جولة";
 
@@ -2073,7 +2132,7 @@ function renderQMEditor(q){
        '<div class="flex gap-2 mt-4 flex-wrap">' +
          '<button class="btn btn-primary" id="eSave">💾 حفظ السؤال</button>' +
          (isNew ? '' : '<button class="btn btn-danger" id="eDel">🗑 حذف</button>') +
-         '<span id="eErr" class="text-xs text-rose-300 self-center"></span>' +
+         '<span id="eErr" class="text-xs text-bad self-center"></span>' +
        '</div>';
   box.innerHTML = h;
 
@@ -2166,6 +2225,33 @@ document.addEventListener("keydown", e => {
 
 document.documentElement.style.setProperty("--t1", S.teams[0].color);
 document.documentElement.style.setProperty("--t2", S.teams[1].color);
+
+/* ══════════════════════════════════════════════════════════════════
+   18 · NIGHT MODE  (زر فقط؛ يبدأ فاتحاً ويُحفظ الاختيار على الجهاز)
+   ══════════════════════════════════════════════════════════════════ */
+function renderThemeButtons(){
+  const dark = document.documentElement.classList.contains("dark");
+  const label = dark ? "الوضع النهاري" : "الوضع الليلي";
+  $$(".theme-toggle").forEach(b => {
+    b.title = label;
+    b.setAttribute("aria-label", label);
+    b.textContent = (dark ? "☀️" : "🌙") + (b.dataset.long ? " " + label : "");
+  });
+}
+function setTheme(dark){
+  document.documentElement.classList.toggle("dark", dark);
+  try{ localStorage.setItem("top10_theme", dark ? "dark" : "light"); }catch(e){}
+  renderThemeButtons();
+}
+$$(".theme-toggle").forEach(b => b.addEventListener("click",
+  () => setTheme(!document.documentElement.classList.contains("dark"))));
+/* نافذة المقدم المفتوحة في المتصفح نفسه تتبع التبديل فوراً */
+window.addEventListener("storage", e => {
+  if(e.key !== "top10_theme") return;
+  document.documentElement.classList.toggle("dark", e.newValue === "dark");
+  renderThemeButtons();
+});
+renderThemeButtons();
 </script>
 </body>
 </html>

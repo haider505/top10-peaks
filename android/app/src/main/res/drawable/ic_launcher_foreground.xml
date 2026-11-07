@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- الرقم 10 بالأبيض، داخل المنطقة الآمنة (دائرة نصف قطرها 33 حول المركز) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M41,33 L47,33 L47,75 L39,75 L39,44 L33,48 L33,40 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillType="evenOdd"
+        android:pathData="M50,54 A13,21 0 1,1 76,54 A13,21 0 1,1 50,54 Z M57.5,54 A5.5,13.5 0 1,1 68.5,54 A5.5,13.5 0 1,1 57.5,54 Z" />
+</vector>

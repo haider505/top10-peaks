@@ -1,0 +1,53 @@
+plugins {
+    id 'com.android.application'
+}
+
+// مفتاح التوقيع يُنشئه build_apk.py داخل android/keystore/ (خارج git).
+def keystoreProps = new Properties()
+def keystorePropsFile = rootProject.file('keystore/keystore.properties')
+if (keystorePropsFile.exists()) {
+    keystorePropsFile.withInputStream { keystoreProps.load(it) }
+}
+
+android {
+    namespace 'io.github.haider505.top10peaks'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'io.github.haider505.top10peaks'
+        minSdk 24
+        targetSdk 35
+        // build_apk.py يمرّر رقماً متزايداً (yyMMddHH) حتى تُثبَّت كل نسخة فوق السابقة.
+        versionCode((project.findProperty('appVersionCode') ?: '1').toString().toInteger())
+        versionName((project.findProperty('appVersionName') ?: '1.0').toString())
+    }
+
+    signingConfigs {
+        release {
+            if (keystorePropsFile.exists()) {
+                storeFile rootProject.file('keystore/' + keystoreProps['storeFile'])
+                storePassword keystoreProps['storePassword']
+                keyAlias keystoreProps['keyAlias']
+                keyPassword keystoreProps['keyPassword']
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            if (keystorePropsFile.exists()) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation 'androidx.webkit:webkit:1.12.1'
+}

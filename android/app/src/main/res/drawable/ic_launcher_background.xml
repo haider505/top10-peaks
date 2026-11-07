@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- خلفية الأيقونة: أزرق اللعبة مع قمم جبلية أغمق -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="@color/accent"
+        android:pathData="M0,0h108v108h-108z" />
+    <path
+        android:fillColor="@color/accent_deep"
+        android:pathData="M0,108 L0,86 L26,62 L42,78 L66,50 L108,92 L108,108 Z" />
+</vector>

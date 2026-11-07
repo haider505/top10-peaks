@@ -1,0 +1,14 @@
+# مخرجات البناء
+.gradle/
+build/
+app/build/
+# مولَّد من ../index.html بواسطة build_apk.py
+app/src/main/assets/
+# خاص بهذا الجهاز
+local.properties
+# مفتاح التوقيع وكلمة مروره — لا يُرفع أبداً
+keystore/
+*.jks
+*.keystore
+*.apk
+*.aab

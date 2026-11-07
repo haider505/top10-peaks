@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- من لوحة ألوان اللعبة -->
+    <color name="bg">#EDF1F8</color>
+    <color name="accent">#2563EB</color>
+    <color name="accent_deep">#1D4ED8</color>
+</resources>
